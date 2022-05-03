@@ -4,6 +4,7 @@
 #include <string>
 #include <math.h>
 #include <vector>
+#include <chrono>
 
 #pragma comment(lib, "opengl32.lib")
 
@@ -16,7 +17,7 @@ float scaleY = 1;
 float scaleX = 10;
 
 double Func(double x) {
-	return (rand()%100-50)/100.0;
+	return tanh(x);
 }
 
 void Init(float start, float finish, int count) {
@@ -81,6 +82,31 @@ void Paint() {
 	DrawGraph();
 }
 
+int DisplayResourceNAMessageBox()
+{
+	int msgboxID = MessageBox(
+		NULL,
+		(LPCWSTR)L"Resource not available\nDo you want to try again?",
+		(LPCWSTR)L"Account Details",
+		MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
+	);
+
+	switch (msgboxID)
+	{
+	case IDCANCEL:
+		// TODO: add code
+		break;
+	case IDTRYAGAIN:
+		// TODO: add code
+		break;
+	case IDCONTINUE:
+		// TODO: add code
+		break;
+	}
+
+	return msgboxID;
+}
+
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
@@ -138,6 +164,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
 	Init(6, scaleX,100);
+	double dt;
+	std::chrono::high_resolution_clock::time_point beg, end;
+
+	DisplayResourceNAMessageBox();
 
 	/* program main loop */
 	while (!bQuit)
@@ -159,6 +189,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		}
 		else
 		{
+
+
 			if (GetAsyncKeyState(' ')) { is_pause = !is_pause; Sleep(1000.0 / FREQUENCY); }
 
 			/* OpenGL animation code goes here */
@@ -171,14 +203,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 				SwapBuffers(hDC);
 
-				theta += 1000.0 / FREQUENCY;
+				theta += 1.0f;
 			}
 
 			std::wstring WindowText = L"ValleyGL";
 			WindowText += is_pause ? L" paused" : L"";
 			SetWindowText(hwnd, WindowText.c_str());
 
-			Sleep(1000.0 / FREQUENCY);
+			Sleep((1000.0 / FREQUENCY));
 		}
 	}
 
